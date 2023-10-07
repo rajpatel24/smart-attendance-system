@@ -4,15 +4,17 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from phonenumber_field.serializerfields import PhoneNumberField
 
+from django.utils import timezone
+from datetime import datetime
+
 from users.models import User
 from users.serializers import UserDetailsSerializer
 
-from .models import Employee
+from .models import Employee, EmployeeDetectionTimeStamp
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
     user = UserDetailsSerializer(read_only=True)
-    employee_id = serializers.IntegerField(write_only=True, required=True)
     username = serializers.CharField(required=False, write_only=True)
     first_name = serializers.CharField(required=False, write_only=True)
     last_name = serializers.CharField(required=False, write_only=True)
@@ -23,7 +25,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = (
-            'id', 'user', 'created', 'modified', 'username',
+            'id', 'employee_id', 'user', 'created', 'modified', 'username',
             'first_name', 'last_name', 'email', 'employee_id',
             'is_active', 'mobile',
         )
@@ -75,4 +77,50 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
             instance.save()
 
+        return instance
+
+
+class EmployeeDetectionTimestampSerializer(serializers.ModelSerializer):
+    employee = EmployeeSerializer(read_only=True)
+    timestamp_data = serializers.CharField(write_only=True)
+    employee_id = serializers.IntegerField(write_only=True, required=True)
+    username = serializers.CharField(required=False, write_only=True)
+
+    class Meta:
+        model = EmployeeDetectionTimeStamp
+        fields = (
+            'id', 'timestamp', 'employee', 'employee_id', 'username', 'created', 'modified', 'username', 'timestamp_data'
+        )
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            employee_id = validated_data['employee_id']
+            timestamp = validated_data['timestamp_data']
+
+            current_date = timezone.now().date()  # Get the current date
+            time_parts = timestamp.split(":")
+            hour, minute, second = map(int, time_parts)
+            datetime_obj = datetime(current_date.year, current_date.month, current_date.day, hour, minute, second)
+
+            employee = Employee.objects.get(employee_id=employee_id)
+
+            employee_timestamp_obj = EmployeeDetectionTimeStamp.objects.create(
+                employee=employee,
+                timestamp=datetime_obj
+            )
+
+            employee_timestamp_obj.save()
+            return employee_timestamp_obj
+
+    def update(self, instance, validated_data):
+        with transaction.atomic():
+            timestamp = validated_data['timestamp_data']
+
+            current_date = timezone.now().date()  # Get the current date
+            time_parts = timestamp.split(":")
+            hour, minute, second = map(int, time_parts)
+            datetime_obj = datetime(current_date.year, current_date.month, current_date.day, hour, minute, second)
+
+            instance.timestamp = datetime_obj
+            instance.save()
         return instance
