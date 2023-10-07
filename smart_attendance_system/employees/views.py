@@ -164,6 +164,7 @@ class EmployeeData(APIView):
     def post(self, request):
         # user = Employee.objects.get(user=self.request.user)
         # serializer = EmployeeSerializer(user)
+        print("\n\n =========>>>>", request.data)
         return Response(
             {
                 'message': 'Employee Data',
