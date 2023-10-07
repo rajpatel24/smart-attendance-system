@@ -10,7 +10,7 @@ SECRET_KEY = 'django-insecure-9)0fto%0xf4+hm@h)&t7o832&pc6l*$%p^(fwgqq*f&5pd^n3s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -33,7 +33,8 @@ INSTALLED_APPS = [
     'rest_auth.registration',
 
     # local apps
-    'users'
+    'users',
+    'employees',
 ]
 
 MIDDLEWARE = [
