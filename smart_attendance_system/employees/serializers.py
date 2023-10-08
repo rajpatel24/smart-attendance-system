@@ -1,3 +1,5 @@
+import time
+
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
@@ -27,7 +29,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'employee_id', 'user', 'created', 'modified', 'username',
             'first_name', 'last_name', 'email', 'employee_id',
-            'is_active', 'mobile',
+            'is_active', 'mobile', 'employee_image1'
         )
 
     def create(self, validated_data):
@@ -108,8 +110,8 @@ class EmployeeDetectionTimestampSerializer(serializers.ModelSerializer):
                 employee=employee,
                 timestamp=datetime_obj
             )
-
             employee_timestamp_obj.save()
+            time.sleep(2)
             return employee_timestamp_obj
 
     def update(self, instance, validated_data):

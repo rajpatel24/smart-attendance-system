@@ -18,7 +18,6 @@ class UserDetailsSerializer(auth_serializers.UserDetailsSerializer):
         fields = ('pk', 'username',
                   'first_name', 'last_name',
                   'email', 'mobile',
-                  'joined_date', 'update_date',
                   'is_active', 'is_staff')
         read_only_fields = ('username',)
         ref_name = 'User'

@@ -18,8 +18,7 @@ class DRFUserAdmin(UserAdmin):
         (_('Permissions'), {'fields': ('is_active', 'is_staff',
                                        'is_superuser',
                                        )}),
-        (_('Important dates'), {'fields': ('last_login', 'joined_date',
-                                           'update_date')}),
+        (_('Important dates'), {'fields': ('last_login', 'joined_date',)}),
     )
     add_fieldsets = (
         (None, {

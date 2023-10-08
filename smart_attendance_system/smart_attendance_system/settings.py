@@ -12,6 +12,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['192.168.0.145:8000', '127.0.0.1:8000']
+
+# CORS headers configuration
+CORS_ORIGIN_WHITELIST = [
+                            "http://localhost:3000",
+                            "http://192.168.0.145:8000",
+                            "http://127.0.0.1:8000"
+                        ]
 
 # Application definition
 
@@ -30,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.openid',
     'rest_auth.registration',
+    'corsheaders',
 
     # local apps
     'users',
@@ -45,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'smart_attendance_system.urls'
@@ -102,6 +114,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+TIME_ZONE = 'Asia/Kolkata'
 
 SITE_ID = 1
 
